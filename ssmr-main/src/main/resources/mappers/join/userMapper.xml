@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssmr.user.repository.UserMapper">
+
+    <select id="findOneWithAuthoritiesByUsername" resultType="com.ssmr.user.dto.User">
+        select USER_ID as userId , password as password FROM USER
+        where USER_ID = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.ssmr.user.dto.User">
+        INSERT INTO USER(USER_ID, PASSWORD, USER_ROLE, EMAIL, USER_NAME, NICKNAME, USER_TYPE, GENDER, BIRTHDAY) VALUES(#{userId}, #{password}, #{role},#{email}, #{username}, #{nickname}, #{userType},#{gender}, #{birthday})
+    </insert>
+
+
+</mapper>
