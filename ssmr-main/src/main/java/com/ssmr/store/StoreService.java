@@ -1,5 +1,7 @@
 package com.ssmr.store;
 
+import com.ssmr.util.ResponseDto;
+import com.ssmr.util.ResponseUtil;
 import okhttp3.*;
 
 import org.json.simple.JSONArray;
@@ -14,9 +16,9 @@ import java.io.IOException;
 @Service
 public class StoreService {
 
-//    @Autowired
-//    StoreRepository StoreRepository;
-    public static String CallCertiAPI(String BIS_NUM) throws IOException, ParseException {
+    @Autowired
+    StoreRepository StoreRepository;
+    public static ResponseDto<Object> CallCertiAPI(String BIS_NUM) throws IOException, ParseException {
         String resultValue ="";
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -44,22 +46,38 @@ public class StoreService {
         if (status_code.equals("OK")) {
             JSONObject jsonObj2 = (JSONObject)jsonArr.get(0);
             String b_stt_cd = (String)jsonObj2.get("b_stt_cd");
+            String tax_type = (String)jsonObj2.get("tax_type");
             System.out.println("b_stt_cd: "+b_stt_cd);
-            if (!(b_stt_cd == null)) {
-                resultValue = "SUCCESS";
+            if (!(b_stt_cd == "")) { //존재하는 사업자 번호인경우 코드 반환
+                return ResponseUtil.SUCCESS( "존재하는 사업자 번호입니다.", null );
             } else {
-                resultValue = "FAIL";
+                return ResponseUtil.FAILURE( tax_type, null );
             }
         } else {
-            resultValue = "FAIL";
+            return ResponseUtil.ERROR( "사업자 상태 조회 실패", null );
         }
-
-        return resultValue;
     }
 
-    public StoreDto createBisDto(StoreDto storeDTO) {
+    public StoreDto createBisDto(StoreDto BisDTO) {
+
+        StoreDto bisDto = new StoreDto();
+//        bisDto.setUSER_ID(joinDto.getUSER_ID());
+        bisDto.setBIS_DIV(BisDTO.getBIS_DIV());
+        bisDto.setBIS_NAME(BisDTO.getBIS_NAME());
+        bisDto.setBIS_TYPE_L(BisDTO.getBIS_TYPE_L());
+        bisDto.setBIS_TYPE_M(BisDTO.getBIS_TYPE_M());
+        bisDto.setBIS_NAME(BisDTO.getBIS_NAME());
+        bisDto.setBIS_NUM(BisDTO.getBIS_NUM());
+        bisDto.setADDRESS(BisDTO.getADDRESS());
+        bisDto.setSTORE_TEL(BisDTO.getSTORE_TEL());
+
+        return bisDto;
+    }
+
+    public StoreDto createStoreDto(StoreDto storeDTO) {
 
         StoreDto storeDto = new StoreDto();
+//        storeDto.setUSER_ID(joinDto.getUSER_ID());
         storeDto.setBIS_DIV(storeDTO.getBIS_DIV());
         storeDto.setBIS_NAME(storeDTO.getBIS_NAME());
         storeDto.setBIS_TYPE_L(storeDTO.getBIS_TYPE_L());
@@ -67,17 +85,28 @@ public class StoreService {
         storeDto.setBIS_NAME(storeDTO.getBIS_NAME());
         storeDto.setBIS_NUM(storeDTO.getBIS_NUM());
         storeDto.setADDRESS(storeDTO.getADDRESS());
-        storeDto.setSTORE_PHONENUM(storeDTO.getSTORE_PHONENUM());
-        storeDto.setOPEN_DATE(storeDTO.getOPEN_DATE());
-        storeDto.setOPEN_TIME(storeDTO.getOPEN_TIME());
+        storeDto.setSTORE_TEL(storeDTO.getSTORE_TEL());
+//        storeDto.setOPEN_TIME(storeDTO.getOPEN_TIME());
 
         return storeDto;
     }
-    public String regiBis(StoreDto storeDto) {
+    public ResponseDto<Object> regiBis(StoreDto bisDto) {
 
-        //StoreRepository.regiBis(storeDto);
+        if ( StoreRepository.regiBis(bisDto) == 1 ) {
+            return ResponseUtil.SUCCESS( "사업자 등록 성공", null );
+        } else {
+            return ResponseUtil.FAILURE( "사업자 등록 실패", null );
+        }
 
-        return "사업자등록성공";
+    }
+
+    public ResponseDto<Object> regiStore(StoreDto storeDto) {
+
+        if ( StoreRepository.regiStore(storeDto) == 1 ) {
+            return ResponseUtil.SUCCESS( "점포 등록 성공", null );
+        } else {
+            return ResponseUtil.FAILURE( "점포 등록 실패", null );
+        }
 
     }
 }

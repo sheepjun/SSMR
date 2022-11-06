@@ -1,6 +1,5 @@
-package com.ssmr.mail.service;
+package com.ssmr.user.mail;
 
-import com.ssmr.mail.controller.dto.MailDto;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,7 +19,7 @@ public class MailService {
      * 작성자: 고종윤
      * 내용: 이메일 정보 생성 및 메일 발송
      */
-    public void sendMail(MailDto mailDto) {
+    public void sendMail(com.ssmr.user.mail.MailDto mailDto) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailDto.getAddress());
         message.setFrom(MailService.FROM_ADDRESS);

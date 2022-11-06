@@ -1,15 +1,8 @@
-package com.ssmr.user.controller;
+package com.ssmr.user.auth;
 
 import com.ssmr.jwt.JwtTokenFilter;
 import com.ssmr.jwt.JwtTokenProvider;
-import com.ssmr.user.dto.TokenDto;
-import com.ssmr.user.dto.UserLoginDto;
-import com.ssmr.util.ResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,21 +28,22 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
+    /**
+     *
+     * @param loginDto
+     * @return
+     *  작성자: 양희준
+     *  기능: JWT 토큰 생성
+     *
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody UserLoginDto loginDto) {
-        log.error("dto{}, {}", loginDto.getUserId(), loginDto.getPassword());
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getPassword());
-        log.error("authenticationToken: {}, {}, {}", authenticationToken.getCredentials(), authenticationToken.getPrincipal());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        if (authentication == null) {
-            log.error("###");
-        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
 
         String jwt = tokenProvider.createToken(authentication);
 

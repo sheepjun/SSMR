@@ -1,48 +1,49 @@
-package com.ssmr.user.controller;
+package com.ssmr.user.join;
 
 
-import com.ssmr.user.dto.MemberLoginDto;
-import com.ssmr.user.dto.User;
-import com.ssmr.user.service.JoinService;
-import com.ssmr.user.service.UserService;
+import com.ssmr.user.auth.User;
 import com.ssmr.util.ResponseDto;
 import com.ssmr.util.ResponseUtil;
-import com.ssmr.util.ResultDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
+@ComponentScan
 @RestController
-@RequestMapping("/user")
 @AllArgsConstructor
-public class UserController {
-
+public class JoinController {
     @Autowired
-    private final UserService userService;
+    private JoinService joinService;
 
 
-    @PostMapping("/hello")
-    public ResponseDto<MemberLoginDto> hello(@Valid @RequestBody MemberLoginDto memberLoginDto) {
-
-        log.debug("###");
-        return ResponseUtil.SUCCESS("성공", memberLoginDto);
-    }
-
+    /**
+     *
+     * @param user
+     * @return
+     * 작성자: 양희준
+     * 기능 : 회원가입
+     */
     @PostMapping("/signup")
     public ResponseDto<User> signup(@Valid @RequestBody User user) {
 
         log.error("password: {}", user.getEmail());
 //        user.setRole("ROLE_USER");
-        userService.signup(user);
+        joinService.signup(user);
 
         return ResponseUtil.SUCCESS("회원가입", user);
 
     }
+
    /* private JoinDto joinDto;
 
     @PostMapping("/join/joinUser")
@@ -53,16 +54,14 @@ public class UserController {
 
     }*/
 
-
-
     /*
      * 기능 : 회원가입 아이디 중복 검사
      * 작성자: 고종윤
      * 내용: 회원가입 아이디 중복검사
      */
-//    @PostMapping("/checkId")
-//    public String checkId(@ModelAttribute String userId) {
-//
-//    }
+    @GetMapping("/join/checkId")
+    public ResponseDto checkId(String USER_ID){
+        return ResponseUtil.SUCCESS(joinService.checkId(USER_ID),null);
+    }
 
 }

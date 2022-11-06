@@ -1,4 +1,4 @@
-package com.ssmr.user.dto;
+package com.ssmr.user.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoginDto {
+public class TokenDto {
 
-    private String userId;
-    private String password;
+    private String token;
 }

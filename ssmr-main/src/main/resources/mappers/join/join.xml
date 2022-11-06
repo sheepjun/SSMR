@@ -5,16 +5,19 @@
 <!-- 위 코드가 mapper 설정을 하는 코드 -->
 
 <!-- Mapper를 사용하는 Repository의 전체 경로를 적어줘야함. -->
-<mapper namespace="com.ssmr.user.repository.JoinRepository">
+<mapper namespace="com.ssmr.user.join.JoinRepository">
     <select id="checkId" resultType="String">
         select USER_ID FROM USER
-        where USER_ID = #{userId}
-    </select>
-
-    <select id="login" resultType="String">
-        select USER_ID FROM USER
-        where USER_ID = #{userId}
+        where USER_ID = #{USER_ID}
     </select>
 
 
+    <select id="findOneWithAuthoritiesByUsername" resultType="com.ssmr.user.auth.UserLoginDto">
+        select USER_ID as userId , password as password FROM USER
+        where USER_ID = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.ssmr.user.auth.User">
+        INSERT INTO USER(USER_ID, PASSWORD, USER_ROLE, EMAIL, USER_NAME, NICKNAME, USER_TYPE, GENDER, BIRTHDAY) VALUES(#{userId}, #{password}, #{role},#{email}, #{username}, #{nickname}, #{userType},#{gender}, #{birthday})
+    </insert>
 </mapper>
